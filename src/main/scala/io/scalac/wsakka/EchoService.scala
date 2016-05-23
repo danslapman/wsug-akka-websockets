@@ -8,12 +8,12 @@ import akka.stream.scaladsl.Flow
 object EchoService {
   def route: Route = path("ws-echo") {
     get {
-      handleWebsocketMessages(echoService)
+      handleWebSocketMessages(echoService)
     }
   }
 
   val echoService: Flow[Message, Message, Any] = Flow[Message].map {
     case TextMessage.Strict(txt) => TextMessage("ECHO: " + txt)
-    //BinaryMessage? :)
+    case _ => TextMessage("Message type unsupported")
   }
 }

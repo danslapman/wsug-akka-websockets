@@ -12,11 +12,11 @@ class ChatRoom(actorSystem: ActorSystem) {
   def websocketFlow(user: String): Flow[Message, Message, Any] =
     Flow.fromGraph(
 
-      FlowGraph.create(Source.actorRef[ChatMessage](bufferSize = 5, OverflowStrategy.fail)) {
+      GraphDSL.create(Source.actorRef[ChatMessage](bufferSize = 5, OverflowStrategy.fail)) {
         implicit builder =>
           chatSource =>
 
-            import FlowGraph.Implicits._
+            import GraphDSL.Implicits._
 
             //input flow, all Messages
             val fromWebsocket = builder.add(
@@ -53,7 +53,7 @@ class ChatRoom(actorSystem: ActorSystem) {
             chatSource ~> backToWebsocket
 
             //          // expose ports
-            FlowShape(fromWebsocket.inlet, backToWebsocket.outlet)
+            FlowShape(fromWebsocket.in, backToWebsocket.outlet)
       }
 
     )
